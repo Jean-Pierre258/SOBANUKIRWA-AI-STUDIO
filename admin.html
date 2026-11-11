@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin | SOBANUKIRWA AI STUDIO</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="admin">
+
+<header class="topbar">
+  <a class="brand" href="dashboard.html">SOBANUKIRWA <span>AI STUDIO</span></a>
+  <nav>
+    <span id="userName"></span>
+    <a href="dashboard.html">Dashboard</a>
+    <button class="btn secondary" data-logout>Logout</button>
+  </nav>
+</header>
+
+<main class="container">
+  <h1>Administrator Dashboard</h1>
+  <div id="notice" class="notice" hidden></div>
+
+  <div id="stats" class="grid"></div>
+
+  <section class="panel" style="margin:22px 0">
+    <h2>Account Approval Settings</h2>
+    <form id="approvalForm">
+      <label>Approval Mode</label>
+      <select id="approvalMode">
+        <option value="MANUAL">Manual Approval</option>
+        <option value="AUTO">Automatic Approval</option>
+      </select>
+      <button class="btn" type="submit">Save Settings</button>
+    </form>
+  </section>
+
+  <h2>Registered Users</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Change Status</th>
+        </tr>
+      </thead>
+      <tbody id="usersTable"></tbody>
+    </table>
+  </div>
+</main>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
