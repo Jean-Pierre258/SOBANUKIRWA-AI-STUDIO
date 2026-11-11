@@ -2,31 +2,422 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>SOBANUKIRWA AI STUDIO</title>
-  <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SOBANUKIRWA AI STUDIO</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f3f6fb;color:#17324d}
+header{background:#073b70;color:white;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.brand{font-size:19px;font-weight:bold;color:white;text-decoration:none}
+.brand span{color:#50d5bd}
+nav{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+button,a.btn{border:0;padding:11px 17px;border-radius:7px;background:#087bb8;color:white;text-decoration:none;cursor:pointer;font-weight:bold}
+button:hover,a.btn:hover{opacity:.85}
+.secondary{background:#e4edf5!important;color:#075080!important}
+main{max-width:1100px;margin:35px auto;padding:15px}
+.hero{background:linear-gradient(120deg,#073b70,#087eaa);color:white;padding:65px 30px;border-radius:18px;text-align:center}
+.hero h1{font-size:40px;margin:0 0 15px}
+.hero p{max-width:650px;margin:0 auto 25px;line-height:1.7}
+.panel{background:white;padding:24px;border-radius:13px;margin:20px 0;box-shadow:0 4px 15px #0001}
+input,select{width:100%;padding:13px;margin:8px 0 15px;border:1px solid #ccd7e2;border-radius:7px}
+label{font-weight:bold}
+.hidden{display:none!important}
+.tabs{display:flex;gap:10px;margin-bottom:20px}
+.tabs button{flex:1}
+.notice{padding:13px;margin:12px 0;border-radius:7px;background:#e5f3ff;color:#075080}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:15px}
+.stat{background:#eaf3fa;padding:20px;border-radius:10px}
+.stat h2{margin:0;color:#087bb8}
+.table-wrap{overflow-x:auto;background:white;border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:650px}
+th,td{padding:13px;border-bottom:1px solid #e1e7ed;text-align:left}
+th{background:#eaf2f8}
+footer{text-align:center;padding:25px;color:#64748b}
+</style>
 </head>
+
 <body>
-<header class="topbar">
-  <a class="brand" href="index.html">SOBANUKIRWA <span>AI STUDIO</span></a>
+
+<header>
+  <a class="brand" href="#" onclick="showPage('home')">
+    SOBANUKIRWA <span>AI STUDIO</span>
+  </a>
   <nav>
-    <a href="login.html">Login</a>
-    <a class="btn" href="register.html">Register</a>
+    <button class="secondary" onclick="showPage('home')">Home</button>
+    <button onclick="showPage('login')">Login</button>
+    <button onclick="showPage('register')">Register</button>
+    <button class="secondary" onclick="showPage('adminLogin')">Admin</button>
   </nav>
 </header>
 
-<main class="container">
-  <section class="hero">
-    <h1>Turn your script into a story.</h1>
+<main>
+
+<!-- HOMEPAGE -->
+<section id="home">
+  <div class="hero">
+    <h1>Turn Your Script Into a Story</h1>
     <p>
       Create educational videos, news explainers, documentaries,
       storytelling and promotional content using AI-powered tools.
     </p>
-    <a class="btn light" href="register.html">Get Started</a>
-  </section>
+    <button onclick="showPage('register')">Get Started</button>
+    <button class="secondary" onclick="showPage('login')">Login</button>
+  </div>
+</section>
+
+<!-- USER LOGIN -->
+<section id="login" class="panel hidden">
+  <h1>User Login</h1>
+  <div id="loginNotice" class="notice hidden"></div>
+  <form onsubmit="userLogin(event)">
+    <label>Email</label>
+    <input id="loginEmail" type="email" required>
+    <label>Password</label>
+    <input id="loginPassword" type="password" required>
+    <button type="submit">Login</button>
+  </form>
+  <p>New user? <a href="#" onclick="showPage('register')">Create account</a></p>
+  <p><a href="#" onclick="showPage('adminLogin')">Administrator Login</a></p>
+</section>
+
+<!-- ADMIN LOGIN -->
+<section id="adminLogin" class="panel hidden">
+  <h1>Administrator Login</h1>
+  <div id="adminNotice" class="notice hidden"></div>
+  <form onsubmit="adminLogin(event)">
+    <label>Admin Email</label>
+    <input id="adminEmail" type="email" required>
+    <label>Admin Password</label>
+    <input id="adminPassword" type="password" required>
+    <button type="submit">Login as Administrator</button>
+  </form>
+</section>
+
+<!-- REGISTRATION -->
+<section id="register" class="panel hidden">
+  <h1>Create Account</h1>
+  <div id="registerNotice" class="notice hidden"></div>
+  <form onsubmit="registerUser(event)">
+    <label>Full Name</label>
+    <input id="regName" required>
+    <label>Email</label>
+    <input id="regEmail" type="email" required>
+    <label>Password</label>
+    <input id="regPassword" type="password" minlength="6" required>
+    <button type="submit">Register</button>
+  </form>
+</section>
+
+<!-- USER DASHBOARD -->
+<section id="userDashboard" class="hidden">
+  <div class="panel">
+    <h1 id="userWelcome">User Dashboard</h1>
+    <p id="userDetails"></p>
+    <button onclick="logout()">Logout</button>
+  </div>
+  <div class="panel">
+    <h2>My Projects</h2>
+    <input id="projectTitle" placeholder="Project title">
+    <input id="projectDescription" placeholder="Project description">
+    <button onclick="createProject()">Create Project</button>
+    <div id="projectNotice" class="notice hidden"></div>
+    <div id="projectList"></div>
+  </div>
+</section>
+
+<!-- ADMIN DASHBOARD -->
+<section id="adminDashboard" class="hidden">
+  <div class="panel">
+    <h1>Administrator Dashboard</h1>
+    <p id="adminWelcome"></p>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div id="adminDashboardNotice" class="notice hidden"></div>
+
+  <div id="stats" class="grid"></div>
+
+  <div class="panel">
+    <h2>Account Approval Settings</h2>
+    <form onsubmit="saveApproval(event)">
+      <label>Approval Mode</label>
+      <select id="approvalMode">
+        <option value="MANUAL">Manual Approval</option>
+        <option value="AUTO">Automatic Approval</option>
+      </select>
+      <button type="submit">Save Settings</button>
+    </form>
+  </div>
+
+  <div class="panel">
+    <h2>Registered Users</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Change Status</th>
+          </tr>
+        </thead>
+        <tbody id="usersTable"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
 </main>
 
-<footer class="footer">© 2026 SOBANUKIRWA AI STUDIO</footer>
+<footer>© 2026 SOBANUKIRWA AI STUDIO</footer>
+
+<script>
+const API_URL="/api/gas";
+let sessionToken=localStorage.getItem("sobanukirwa_token")||"";
+let currentUser=null;
+
+function showPage(page){
+  document.querySelectorAll("main > section").forEach(s=>s.classList.add("hidden"));
+  document.getElementById(page).classList.remove("hidden");
+}
+
+function notify(id,text){
+  const el=document.getElementById(id);
+  el.textContent=text;
+  el.classList.remove("hidden");
+}
+
+async function api(action,data={}){
+  const response=await fetch(API_URL,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({action,data})
+  });
+  const result=await response.json();
+  if(!response.ok||result.ok===false){
+    throw new Error(result.error||"Request failed");
+  }
+  return result;
+}
+
+async function registerUser(event){
+  event.preventDefault();
+  try{
+    const result=await api("register",{
+      name:document.getElementById("regName").value.trim(),
+      email:document.getElementById("regEmail").value.trim(),
+      password:document.getElementById("regPassword").value
+    });
+    notify("registerNotice",result.message||"Registration submitted successfully.");
+  }catch(error){
+    notify("registerNotice",error.message);
+  }
+}
+
+async function userLogin(event){
+  event.preventDefault();
+  await authenticate(
+    document.getElementById("loginEmail").value,
+    document.getElementById("loginPassword").value,
+    "loginNotice"
+  );
+}
+
+async function adminLogin(event){
+  event.preventDefault();
+  await authenticate(
+    document.getElementById("adminEmail").value,
+    document.getElementById("adminPassword").value,
+    "adminNotice"
+  );
+}
+
+async function authenticate(email,password,noticeId){
+  try{
+    const result=await api("login",{email,password});
+    const user=result.user;
+    if(!user||!result.token)throw new Error("Invalid login response.");
+
+    if(noticeId==="adminNotice"&&user.role!=="ADMIN"){
+      throw new Error("This account is not an administrator.");
+    }
+
+    sessionToken=result.token;
+    currentUser=user;
+    localStorage.setItem("sobanukirwa_token",sessionToken);
+
+    if(user.role==="ADMIN"){
+      showPage("adminDashboard");
+      document.getElementById("adminWelcome").textContent="Welcome, "+(user.name||user.fullName||user.email);
+      await loadAdmin();
+    }else{
+      if(noticeId==="adminNotice")throw new Error("Admin access denied.");
+      showPage("userDashboard");
+      document.getElementById("userWelcome").textContent="Welcome, "+(user.name||user.fullName||"User");
+      document.getElementById("userDetails").textContent="Role: "+user.role+" | Status: "+user.status;
+      await loadProjects();
+    }
+  }catch(error){
+    notify(noticeId,error.message);
+  }
+}
+
+async function createProject(){
+  try{
+    const result=await api("createProject",{
+      token:sessionToken,
+      title:document.getElementById("projectTitle").value.trim(),
+      description:document.getElementById("projectDescription").value.trim()
+    });
+    notify("projectNotice",result.message||"Project created.");
+    await loadProjects();
+  }catch(error){
+    notify("projectNotice",error.message);
+  }
+}
+
+async function loadProjects(){
+  try{
+    const result=await api("listProjects",{token:sessionToken});
+    const list=document.getElementById("projectList");
+    list.replaceChildren();
+    (result.projects||[]).forEach(project=>{
+      const item=document.createElement("div");
+      item.className="stat";
+      const heading=document.createElement("strong");
+      heading.textContent=project.title||"Untitled";
+      const description=document.createElement("p");
+      description.textContent=project.description||"";
+      item.append(heading,description);
+      list.appendChild(item);
+    });
+  }catch(error){
+    document.getElementById("projectList").textContent=error.message;
+  }
+}
+
+async function loadAdmin(){
+  try{
+    const [overview,users]=await Promise.all([
+      api("adminOverview",{token:sessionToken}),
+      api("adminUsers",{token:sessionToken})
+    ]);
+
+    const stats=document.getElementById("stats");
+    stats.replaceChildren();
+
+    const values=overview.stats||overview;
+    Object.entries(values).forEach(([key,value])=>{
+      if(typeof value!=="number")return;
+      const box=document.createElement("div");
+      box.className="stat";
+      const heading=document.createElement("h2");
+      heading.textContent=value;
+      const label=document.createElement("p");
+      label.textContent=key.replace(/([A-Z])/g," $1");
+      box.append(heading,label);
+      stats.appendChild(box);
+    });
+
+    const tbody=document.getElementById("usersTable");
+    tbody.replaceChildren();
+
+    (users.users||[]).forEach(user=>{
+      const tr=document.createElement("tr");
+      [user.name||user.fullName,user.email,user.role,user.status].forEach(value=>{
+        const td=document.createElement("td");
+        td.textContent=value||"";
+        tr.appendChild(td);
+      });
+
+      const actionCell=document.createElement("td");
+      const select=document.createElement("select");
+      ["ACTIVE","PENDING","SUSPENDED","REJECTED"].forEach(status=>{
+        const option=document.createElement("option");
+        option.value=status;
+        option.textContent=status;
+        option.selected=user.status===status;
+        select.appendChild(option);
+      });
+
+      const button=document.createElement("button");
+      button.textContent="Update";
+      button.onclick=async()=>{
+        try{
+          await api("updateUserStatus",{
+            token:sessionToken,
+            userId:user.id,
+            status:select.value
+          });
+          await loadAdmin();
+        }catch(error){
+          notify("adminDashboardNotice",error.message);
+        }
+      };
+      actionCell.append(select,button);
+      tr.appendChild(actionCell);
+      tbody.appendChild(tr);
+    });
+
+    if(users.approvalMode){
+      document.getElementById("approvalMode").value=users.approvalMode;
+    }
+  }catch(error){
+    notify("adminDashboardNotice",error.message);
+  }
+}
+
+async function saveApproval(event){
+  event.preventDefault();
+  try{
+    await api("updateApprovalMode",{
+      token:sessionToken,
+      mode:document.getElementById("approvalMode").value
+    });
+    notify("adminDashboardNotice","Approval settings saved.");
+  }catch(error){
+    notify("adminDashboardNotice",error.message);
+  }
+}
+
+async function logout(){
+  try{
+    await api("logout",{token:sessionToken});
+  }catch(error){}
+  localStorage.removeItem("sobanukirwa_token");
+  sessionToken="";
+  currentUser=null;
+  showPage("home");
+}
+
+async function restoreSession(){
+  if(!sessionToken)return;
+  try{
+    const result=await api("getMe",{token:sessionToken});
+    currentUser=result.user;
+    if(!currentUser)throw new Error("Session expired");
+
+    if(currentUser.role==="ADMIN"){
+      showPage("adminDashboard");
+      document.getElementById("adminWelcome").textContent="Welcome, "+(currentUser.name||currentUser.email);
+      await loadAdmin();
+    }else{
+      showPage("userDashboard");
+      document.getElementById("userWelcome").textContent="Welcome, "+(currentUser.name||"User");
+      await loadProjects();
+    }
+  }catch(error){
+    localStorage.removeItem("sobanukirwa_token");
+    sessionToken="";
+    showPage("home");
+  }
+}
+
+restoreSession();
+</script>
+
 </body>
 </html>
