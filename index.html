@@ -417,6 +417,72 @@ async function restoreSession(){
 }
 
 restoreSession();
+
+
+/* SOBANUKIRWA AI STUDIO - AUTHENTICATION GUARD */
+
+const AUTH_KEY = "sobanukirwa_token";
+
+function isLoggedIn() {
+  return !!localStorage.getItem(AUTH_KEY);
+}
+
+function requireLogin(targetPage) {
+  if (!isLoggedIn()) {
+    sessionStorage.setItem("requestedPage", targetPage);
+    window.location.href = "index.html#login";
+    return false;
+  }
+  return true;
+}
+
+// Protect Project 2
+function openProject2() {
+  if (!requireLogin("project2")) return;
+  window.location.href = "project2.html";
+}
+
+// Protect Admin Dashboard
+function openAdminDashboard() {
+  if (!requireLogin("admin")) return;
+  window.location.href = "admin.html";
+}
+
+// Protect all private pages
+document.addEventListener("DOMContentLoaded", function () {
+  const protectedPages = [
+    "dashboard.html",
+    "project2.html",
+    "admin.html"
+  ];
+
+  const currentPage = location.pathname.split("/").pop();
+
+  if (
+    protectedPages.includes(currentPage) &&
+    !isLoggedIn()
+  ) {
+    window.location.replace("index.html#login");
+  }
+});
+
+// After successful login, redirect to requested page
+function redirectAfterLogin(user) {
+  const requestedPage =
+    sessionStorage.getItem("requestedPage");
+
+  sessionStorage.removeItem("requestedPage");
+
+  if (user.role === "ADMIN") {
+    window.location.href = "admin.html";
+  } else if (requestedPage === "project2") {
+    window.location.href = "project2.html";
+  } else {
+    window.location.href = "dashboard.html";
+  }
+}
+
+  
 </script>
 
 </body>
